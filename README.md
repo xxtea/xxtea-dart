@@ -4,6 +4,7 @@
     <img src="https://avatars1.githubusercontent.com/u/6683159?v=3&s=86" alt="XXTEA logo" title="XXTEA" align="right" />
 </a>
 
+[![Build Status](https://travis-ci.org/xxtea/xxtea-dart.svg?branch=master)](https://travis-ci.org/xxtea/xxtea-dart)
 [![Pub](https://img.shields.io/pub/v/xxtea.svg)](https://pub.dartlang.org/packages/xxtea)
 
 ## Introduction
