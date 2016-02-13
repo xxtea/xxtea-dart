@@ -1,0 +1,9 @@
+name: xxtea
+version: 1.0.0
+author: Ma Bingyao <mabingyao@gmail.com>
+description: XXTEA for Dart
+homepage: https://github.com/xxtea/xxtea-dart
+environment:
+  sdk: '>=1.13.0'
+dev_dependencies:
+  test: 'any'
