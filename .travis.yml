@@ -2,3 +2,4 @@ language: dart
 dart:
   - stable
   - dev
+with_content_shell: true
