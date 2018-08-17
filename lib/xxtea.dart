@@ -156,11 +156,11 @@ class XXTEA {
   }
 
   static String encryptToString(dynamic data, dynamic key) {
-    return BASE64.encode(encrypt(data, key));
+    return base64.encode(encrypt(data, key));
   }
 
   static Uint8List decrypt(dynamic data, dynamic key) {
-    if (data is String) data = BASE64.decode(data);
+    if (data is String) data = base64.decode(data);
     if (key is String) key = _toBytes(key);
     if (data == null || data.length == 0) {
       return data;
@@ -169,6 +169,6 @@ class XXTEA {
   }
 
   static String decryptToString(dynamic data, dynamic key) {
-    return UTF8.decode(decrypt(data, key));
+    return utf8.decode(decrypt(data, key));
   }
 }
