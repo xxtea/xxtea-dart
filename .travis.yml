@@ -1,4 +1,7 @@
 language: dart
 dart:
   - stable
-with_content_shell: true
+dart_task:
+- test: --platform vm
+- test: --platform dartium
+  install_dartium: true
