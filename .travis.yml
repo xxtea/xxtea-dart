@@ -4,4 +4,4 @@ dart:
 dart_task:
 - test: --platform vm
 after_success:
-  - echo y|pub publish
+  - pub publish
