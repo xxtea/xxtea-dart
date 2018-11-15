@@ -3,3 +3,5 @@ dart:
   - stable
 dart_task:
 - test: --platform vm
+after_success:
+  - pub publish
