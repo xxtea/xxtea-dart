@@ -9,7 +9,7 @@
 |      Roger M. Needham                                    |
 |                                                          |
 | Code Author: Ma Bingyao <mabingyao@gmail.com>            |
-| LastModified: Oct 14, 2018                               |
+| LastModified: Oct 16, 2018                               |
 |                                                          |
 \**********************************************************/
 
@@ -23,8 +23,10 @@ const XXTEA xxtea = const XXTEA();
 
 Uint8List xxteaEncrypt(dynamic data, dynamic key) => xxtea.encrypt(data, key);
 Uint8List xxteaDecrypt(dynamic data, dynamic key) => xxtea.decrypt(data, key);
-String xxteaEncryptToString(dynamic data, dynamic key) => xxtea.encryptToString(data, key);
-String xxteaDecryptToString(dynamic data, dynamic key) => xxtea.decryptToString(data, key);
+String xxteaEncryptToString(dynamic data, dynamic key) =>
+    xxtea.encryptToString(data, key);
+String xxteaDecryptToString(dynamic data, dynamic key) =>
+    xxtea.decryptToString(data, key);
 
 class XXTEA {
   static const int _DELTA = 0x9E3779B9;
@@ -67,7 +69,8 @@ class XXTEA {
   }
 
   int _mx(int sum, int y, int z, int p, int e, Uint32List k) {
-    return ((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (k[p & 3 ^ e] ^ z));
+    return ((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^
+        ((sum ^ y) + (k[p & 3 ^ e] ^ z));
   }
 
   Uint8List _fixkey(Uint8List key) {
@@ -103,20 +106,19 @@ class XXTEA {
   }
 
   Uint32List _decryptUint32List(Uint32List v, Uint32List k) {
-
     int length = v.length;
     int n = length - 1;
     int y, z, sum, e, p, q;
     y = v[0];
     q = 6 + (52 ~/ length);
     for (sum = _int(q * _DELTA); sum != 0; sum = _int(sum - _DELTA)) {
-        e = sum >> 2 & 3;
-        for (p = n; p > 0; --p) {
-            z = v[p - 1];
-            y = v[p] = _int(v[p] - _mx(sum, y, z, p, e, k));
-        }
-        z = v[n];
-        y = v[0] = _int(v[0] - _mx(sum, y, z, p, e, k));
+      e = sum >> 2 & 3;
+      for (p = n; p > 0; --p) {
+        z = v[p - 1];
+        y = v[p] = _int(v[p] - _mx(sum, y, z, p, e, k));
+      }
+      z = v[n];
+      y = v[0] = _int(v[0] - _mx(sum, y, z, p, e, k));
     }
     return v;
   }
@@ -140,8 +142,11 @@ class XXTEA {
       } else {
         if (i + 1 < n) {
           int nextCodeUnit = str.codeUnitAt(i + 1);
-          if (codeUnit < 0xDC00 && 0xDC00 <= nextCodeUnit && nextCodeUnit <= 0xDFFF) {
-            int rune = (((codeUnit & 0x03FF) << 10) | (nextCodeUnit & 0x03FF)) + 0x010000;
+          if (codeUnit < 0xDC00 &&
+              0xDC00 <= nextCodeUnit &&
+              nextCodeUnit <= 0xDFFF) {
+            int rune = (((codeUnit & 0x03FF) << 10) | (nextCodeUnit & 0x03FF)) +
+                0x010000;
             bytes[length++] = 0xF0 | ((rune >> 18) & 0x3F);
             bytes[length++] = 0x80 | ((rune >> 12) & 0x3F);
             bytes[length++] = 0x80 | ((rune >> 6) & 0x3F);
@@ -162,7 +167,10 @@ class XXTEA {
     if (data == null || data.length == 0) {
       return data;
     }
-    return _toUint8List(_encryptUint32List(_toUint32List(data, true), _toUint32List(_fixkey(key), false)), false);
+    return _toUint8List(
+        _encryptUint32List(
+            _toUint32List(data, true), _toUint32List(_fixkey(key), false)),
+        false);
   }
 
   String encryptToString(dynamic data, dynamic key) {
@@ -175,7 +183,10 @@ class XXTEA {
     if (data == null || data.length == 0) {
       return data;
     }
-    return _toUint8List(_decryptUint32List(_toUint32List(data, false), _toUint32List(_fixkey(key), false)), true);
+    return _toUint8List(
+        _decryptUint32List(
+            _toUint32List(data, false), _toUint32List(_fixkey(key), false)),
+        true);
   }
 
   String decryptToString(dynamic data, dynamic key) {
