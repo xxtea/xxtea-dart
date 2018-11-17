@@ -1,9 +1,8 @@
 name: xxtea
-version: 2.0.1
+version: 2.0.2
 author: Ma Bingyao <mabingyao@gmail.com>
 description: XXTEA for Dart
   XXTEA is a fast and secure encryption algorithm. This is a XXTEA library for Dart.
-  It is different from the original XXTEA encryption algorithm. It encrypts and decrypts String/Uint8List instead of uint32 array, and the key is also String/Uint8List.
 homepage: https://github.com/xxtea/xxtea-dart
 environment:
   sdk: '>=2.0.0 <3.0.0'

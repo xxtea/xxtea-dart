@@ -1,3 +1,7 @@
+## 2.0.2
+
+* Updated description.
+
 ## 2.0.1
 
 * Added example.
