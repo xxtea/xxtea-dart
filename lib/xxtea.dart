@@ -1,4 +1,4 @@
-/**********************************************************\
+/*--------------------------------------------------------*\
 |                                                          |
 | xxtea.dart                                               |
 |                                                          |
@@ -11,15 +11,14 @@
 | Code Author: Ma Bingyao <mabingyao@gmail.com>            |
 | LastModified: Oct 16, 2018                               |
 |                                                          |
-\**********************************************************/
-
+\*________________________________________________________*/
 library xxtea;
 
-import "dart:convert";
-import "dart:core";
-import "dart:typed_data";
+import 'dart:convert';
+import 'dart:core';
+import 'dart:typed_data';
 
-const XXTEA xxtea = const XXTEA();
+const xxtea = XXTEA();
 
 Uint8List xxteaEncrypt(dynamic data, dynamic key) => xxtea.encrypt(data, key);
 Uint8List xxteaDecrypt(dynamic data, dynamic key) => xxtea.decrypt(data, key);
@@ -29,40 +28,40 @@ String xxteaDecryptToString(dynamic data, dynamic key) =>
     xxtea.decryptToString(data, key);
 
 class XXTEA {
-  static const int _DELTA = 0x9E3779B9;
+  static const _DELTA = 0x9E3779B9;
 
   const XXTEA();
 
   Uint8List _toUint8List(Uint32List v, bool includeLength) {
-    int length = v.length;
-    int n = length << 2;
+    final length = v.length;
+    var n = length << 2;
     if (includeLength) {
-      int m = v[length - 1];
+      final m = v[length - 1];
       n -= 4;
       if ((m < n - 3) || (m > n)) {
         return null;
       }
       n = m;
     }
-    Uint8List bytes = new Uint8List(n);
-    for (int i = 0; i < n; ++i) {
+    final bytes = Uint8List(n);
+    for (var i = 0; i < n; ++i) {
       bytes[i] = v[i >> 2] >> ((i & 3) << 3);
     }
     return bytes;
   }
 
   Uint32List _toUint32List(Uint8List bytes, includeLength) {
-    int length = bytes.length;
-    int n = length >> 2;
+    final length = bytes.length;
+    var n = length >> 2;
     if ((length & 3) != 0) ++n;
     Uint32List v;
     if (includeLength) {
-      v = new Uint32List(n + 1);
+      v = Uint32List(n + 1);
       v[n] = length;
     } else {
-      v = new Uint32List(n);
+      v = Uint32List(n);
     }
-    for (int i = 0; i < length; ++i) {
+    for (var i = 0; i < length; ++i) {
       v[i >> 2] |= bytes[i] << ((i & 3) << 3);
     }
     return v;
@@ -75,7 +74,7 @@ class XXTEA {
 
   Uint8List _fixkey(Uint8List key) {
     if (key.length < 16) {
-      Uint8List k = new Uint8List(16);
+      final k = Uint8List(16);
       k.setAll(0, key);
       return k;
     }
@@ -87,9 +86,9 @@ class XXTEA {
   }
 
   Uint32List _encryptUint32List(Uint32List v, Uint32List k) {
-    int length = v.length;
-    int n = length - 1;
-    int y, z, sum, e, p, q;
+    final length = v.length;
+    final n = length - 1;
+    var y, z, sum, e, p, q;
     z = v[n];
     sum = 0;
     for (q = 6 + (52 ~/ length); q > 0; --q) {
@@ -106,9 +105,9 @@ class XXTEA {
   }
 
   Uint32List _decryptUint32List(Uint32List v, Uint32List k) {
-    int length = v.length;
-    int n = length - 1;
-    int y, z, sum, e, p, q;
+    final length = v.length;
+    final n = length - 1;
+    var y, z, sum, e, p, q;
     y = v[0];
     q = 6 + (52 ~/ length);
     for (sum = _int(q * _DELTA); sum != 0; sum = _int(sum - _DELTA)) {
@@ -124,12 +123,12 @@ class XXTEA {
   }
 
   Uint8List _toBytes(String str) {
-    int n = str.length;
+    final n = str.length;
     // A single code unit uses at most 3 bytes. Two code units at most 4.
-    Uint8List bytes = new Uint8List(n * 3);
-    int length = 0;
-    for (int i = 0; i < n; i++) {
-      int codeUnit = str.codeUnitAt(i);
+    final bytes = Uint8List(n * 3);
+    var length = 0;
+    for (var i = 0; i < n; i++) {
+      final codeUnit = str.codeUnitAt(i);
       if (codeUnit < 0x80) {
         bytes[length++] = codeUnit;
       } else if (codeUnit < 0x800) {
@@ -141,12 +140,13 @@ class XXTEA {
         bytes[length++] = 0x80 | (codeUnit & 0x3F);
       } else {
         if (i + 1 < n) {
-          int nextCodeUnit = str.codeUnitAt(i + 1);
+          final nextCodeUnit = str.codeUnitAt(i + 1);
           if (codeUnit < 0xDC00 &&
               0xDC00 <= nextCodeUnit &&
               nextCodeUnit <= 0xDFFF) {
-            int rune = (((codeUnit & 0x03FF) << 10) | (nextCodeUnit & 0x03FF)) +
-                0x010000;
+            final rune =
+                (((codeUnit & 0x03FF) << 10) | (nextCodeUnit & 0x03FF)) +
+                    0x010000;
             bytes[length++] = 0xF0 | ((rune >> 18) & 0x3F);
             bytes[length++] = 0x80 | ((rune >> 12) & 0x3F);
             bytes[length++] = 0x80 | ((rune >> 6) & 0x3F);
@@ -155,7 +155,7 @@ class XXTEA {
             continue;
           }
         }
-        throw new FormatException("Malformed string");
+        throw FormatException('Malformed string');
       }
     }
     return bytes.sublist(0, length);
