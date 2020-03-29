@@ -9,7 +9,7 @@
 |      Roger M. Needham                                    |
 |                                                          |
 | Code Author: Ma Bingyao <mabingyao@gmail.com>            |
-| LastModified: Oct 16, 2018                               |
+| LastModified: Mar 29, 2020                               |
 |                                                          |
 \*________________________________________________________*/
 library xxtea;
@@ -78,7 +78,7 @@ class XXTEA {
       k.setAll(0, key);
       return k;
     }
-    return key;
+    return key.sublist(0, 16);
   }
 
   int _int(int i) {
@@ -122,48 +122,9 @@ class XXTEA {
     return v;
   }
 
-  Uint8List _toBytes(String str) {
-    final n = str.length;
-    // A single code unit uses at most 3 bytes. Two code units at most 4.
-    final bytes = Uint8List(n * 3);
-    var length = 0;
-    for (var i = 0; i < n; i++) {
-      final codeUnit = str.codeUnitAt(i);
-      if (codeUnit < 0x80) {
-        bytes[length++] = codeUnit;
-      } else if (codeUnit < 0x800) {
-        bytes[length++] = 0xC0 | (codeUnit >> 6);
-        bytes[length++] = 0x80 | (codeUnit & 0x3F);
-      } else if (codeUnit < 0xD800 || codeUnit > 0xDfff) {
-        bytes[length++] = 0xE0 | (codeUnit >> 12);
-        bytes[length++] = 0x80 | ((codeUnit >> 6) & 0x3F);
-        bytes[length++] = 0x80 | (codeUnit & 0x3F);
-      } else {
-        if (i + 1 < n) {
-          final nextCodeUnit = str.codeUnitAt(i + 1);
-          if (codeUnit < 0xDC00 &&
-              0xDC00 <= nextCodeUnit &&
-              nextCodeUnit <= 0xDFFF) {
-            final rune =
-                (((codeUnit & 0x03FF) << 10) | (nextCodeUnit & 0x03FF)) +
-                    0x010000;
-            bytes[length++] = 0xF0 | ((rune >> 18) & 0x3F);
-            bytes[length++] = 0x80 | ((rune >> 12) & 0x3F);
-            bytes[length++] = 0x80 | ((rune >> 6) & 0x3F);
-            bytes[length++] = 0x80 | (rune & 0x3F);
-            i++;
-            continue;
-          }
-        }
-        throw FormatException('Malformed string');
-      }
-    }
-    return bytes.sublist(0, length);
-  }
-
   Uint8List encrypt(dynamic data, dynamic key) {
-    if (data is String) data = _toBytes(data);
-    if (key is String) key = _toBytes(key);
+    if (data is String) data = utf8.encode(data);
+    if (key is String) key = utf8.encode(key);
     if (data == null || data.length == 0) {
       return data;
     }
@@ -179,7 +140,7 @@ class XXTEA {
 
   Uint8List decrypt(dynamic data, dynamic key) {
     if (data is String) data = base64.decode(data);
-    if (key is String) key = _toBytes(key);
+    if (key is String) key = utf8.encode(key);
     if (data == null || data.length == 0) {
       return data;
     }
