@@ -23,5 +23,5 @@ String key = "1234567890";
 String encrypt_data = xxtea.encryptToString(str, key);
 print(encrypt_data)
 String decrypt_data = xxtea.decryptToString(encrypt_data, key);
-print(str == encrypt_data)
+print(str == decrypt_data)
 ```
