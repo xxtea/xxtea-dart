@@ -20,20 +20,16 @@ import 'dart:typed_data';
 
 const xxtea = XXTEA();
 
-Uint8List xxteaEncrypt(dynamic data, dynamic key,
-        {bool includeLength = true}) =>
+Uint8List? xxteaEncrypt(dynamic data, dynamic key, {bool includeLength = true}) =>
     xxtea.encrypt(data, key, includeLength: includeLength);
 
-Uint8List xxteaDecrypt(dynamic data, dynamic key,
-        {bool includeLength = true}) =>
+Uint8List? xxteaDecrypt(dynamic data, dynamic key, {bool includeLength = true}) =>
     xxtea.decrypt(data, key, includeLength: includeLength);
 
-String xxteaEncryptToString(dynamic data, dynamic key,
-        {bool includeLength = true}) =>
+String? xxteaEncryptToString(dynamic data, dynamic key, {bool includeLength = true}) =>
     xxtea.encryptToString(data, key, includeLength: includeLength);
 
-String xxteaDecryptToString(dynamic data, dynamic key,
-        {bool includeLength = true}) =>
+String? xxteaDecryptToString(dynamic data, dynamic key, {bool includeLength = true}) =>
     xxtea.decryptToString(data, key, includeLength: includeLength);
 
 class XXTEA {
@@ -41,7 +37,7 @@ class XXTEA {
 
   const XXTEA();
 
-  Uint8List _toUint8List(Uint32List v, bool includeLength) {
+  Uint8List? _toUint8List(Uint32List v, bool includeLength) {
     final length = v.length;
     var n = length << 2;
     if (includeLength) {
@@ -77,8 +73,7 @@ class XXTEA {
   }
 
   int _mx(int sum, int y, int z, int p, int e, Uint32List k) {
-    return ((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^
-        ((sum ^ y) + (k[p & 3 ^ e] ^ z));
+    return ((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (k[p & 3 ^ e] ^ z));
   }
 
   Uint8List _fixkey(Uint8List key) {
@@ -131,37 +126,39 @@ class XXTEA {
     return v;
   }
 
-  Uint8List encrypt(dynamic data, dynamic key, {bool includeLength = true}) {
+  Uint8List? encrypt(dynamic data, dynamic key, {bool includeLength = true}) {
     if (data is String) data = utf8.encode(data);
     if (key is String) key = utf8.encode(key);
     if (data == null || data.length == 0) {
       return data;
     }
     return _toUint8List(
-        _encryptUint32List(_toUint32List(data, includeLength),
-            _toUint32List(_fixkey(key), false)),
-        false);
+        _encryptUint32List(_toUint32List(data, includeLength), _toUint32List(_fixkey(key), false)), false);
   }
 
-  String encryptToString(dynamic data, dynamic key,
-      {bool includeLength = true}) {
-    return base64.encode(encrypt(data, key, includeLength: includeLength));
+  String? encryptToString(dynamic data, dynamic key, {bool includeLength = true}) {
+    final encrypted = encrypt(data, key, includeLength: includeLength);
+
+    if (encrypted != null) {
+      return base64.encode(encrypted);
+    }
   }
 
-  Uint8List decrypt(dynamic data, dynamic key, {bool includeLength = true}) {
+  Uint8List? decrypt(dynamic data, dynamic key, {bool includeLength = true}) {
     if (data is String) data = base64.decode(data);
     if (key is String) key = utf8.encode(key);
     if (data == null || data.length == 0) {
       return data;
     }
     return _toUint8List(
-        _decryptUint32List(
-            _toUint32List(data, false), _toUint32List(_fixkey(key), false)),
-        includeLength);
+        _decryptUint32List(_toUint32List(data, false), _toUint32List(_fixkey(key), false)), includeLength);
   }
 
-  String decryptToString(dynamic data, dynamic key,
-      {bool includeLength = true}) {
-    return utf8.decode(decrypt(data, key, includeLength: includeLength));
+  String? decryptToString(dynamic data, dynamic key, {bool includeLength = true}) {
+    final decrypted = decrypt(data, key, includeLength: includeLength);
+
+    if (decrypted != null) {
+      return utf8.decode(decrypted);
+    }
   }
 }
