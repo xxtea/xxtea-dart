@@ -1,3 +1,7 @@
+## 2.1.0
+
+* Migrate to null-safety.
+
 ## 2.0.3
 
 * Fixed some hints.

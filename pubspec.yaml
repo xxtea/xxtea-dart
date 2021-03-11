@@ -1,5 +1,5 @@
 name: xxtea
-version: 3.0.0
+version: 2.1.0
 description: XXTEA for Dart
   XXTEA is a fast and secure encryption algorithm. This is a XXTEA library for Dart.
 homepage: https://github.com/xxtea/xxtea-dart
