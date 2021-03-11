@@ -9,7 +9,7 @@
 |      Roger M. Needham                                    |
 |                                                          |
 | Code Author: Ma Bingyao <mabingyao@gmail.com>            |
-| LastModified: Mar 29, 2020                               |
+| LastModified: Mar 11, 2021                               |
 |                                                          |
 \*________________________________________________________*/
 library xxtea;
@@ -20,16 +20,20 @@ import 'dart:typed_data';
 
 const xxtea = XXTEA();
 
-Uint8List? xxteaEncrypt(dynamic data, dynamic key, {bool includeLength = true}) =>
+Uint8List? xxteaEncrypt(dynamic data, dynamic key,
+        {bool includeLength = true}) =>
     xxtea.encrypt(data, key, includeLength: includeLength);
 
-Uint8List? xxteaDecrypt(dynamic data, dynamic key, {bool includeLength = true}) =>
+Uint8List? xxteaDecrypt(dynamic data, dynamic key,
+        {bool includeLength = true}) =>
     xxtea.decrypt(data, key, includeLength: includeLength);
 
-String? xxteaEncryptToString(dynamic data, dynamic key, {bool includeLength = true}) =>
+String? xxteaEncryptToString(dynamic data, dynamic key,
+        {bool includeLength = true}) =>
     xxtea.encryptToString(data, key, includeLength: includeLength);
 
-String? xxteaDecryptToString(dynamic data, dynamic key, {bool includeLength = true}) =>
+String? xxteaDecryptToString(dynamic data, dynamic key,
+        {bool includeLength = true}) =>
     xxtea.decryptToString(data, key, includeLength: includeLength);
 
 class XXTEA {
@@ -73,7 +77,8 @@ class XXTEA {
   }
 
   int _mx(int sum, int y, int z, int p, int e, Uint32List k) {
-    return ((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^ ((sum ^ y) + (k[p & 3 ^ e] ^ z));
+    return ((z >> 5 ^ y << 2) + (y >> 3 ^ z << 4)) ^
+        ((sum ^ y) + (k[p & 3 ^ e] ^ z));
   }
 
   Uint8List _fixkey(Uint8List key) {
@@ -133,10 +138,13 @@ class XXTEA {
       return data;
     }
     return _toUint8List(
-        _encryptUint32List(_toUint32List(data, includeLength), _toUint32List(_fixkey(key), false)), false);
+        _encryptUint32List(_toUint32List(data, includeLength),
+            _toUint32List(_fixkey(key), false)),
+        false);
   }
 
-  String? encryptToString(dynamic data, dynamic key, {bool includeLength = true}) {
+  String? encryptToString(dynamic data, dynamic key,
+      {bool includeLength = true}) {
     final encrypted = encrypt(data, key, includeLength: includeLength);
 
     if (encrypted != null) {
@@ -151,10 +159,13 @@ class XXTEA {
       return data;
     }
     return _toUint8List(
-        _decryptUint32List(_toUint32List(data, false), _toUint32List(_fixkey(key), false)), includeLength);
+        _decryptUint32List(
+            _toUint32List(data, false), _toUint32List(_fixkey(key), false)),
+        includeLength);
   }
 
-  String? decryptToString(dynamic data, dynamic key, {bool includeLength = true}) {
+  String? decryptToString(dynamic data, dynamic key,
+      {bool includeLength = true}) {
     final decrypted = decrypt(data, key, includeLength: includeLength);
 
     if (decrypted != null) {
